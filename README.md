@@ -1,3 +1,3 @@
 # 53F_HighStakes
 
-:\
+:|
