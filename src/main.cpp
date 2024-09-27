@@ -28,7 +28,7 @@ void opcontrol() {
      		chassis.tank(leftY, rightY);
      	}else if (reverseDT == true && arcade == false) {
      		controller.print(0, 0, "Reverse(A):_ON__________");
-     		chassis.tank(-leftY, -rightY);
+     		chassis.tank(-rightY, -leftY);
      	}
 
       // -- Toggle for Arcade Drivetrain and funtion for Arcade Drive -- //

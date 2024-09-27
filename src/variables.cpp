@@ -106,12 +106,5 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::print(3, "//----- 53F -----/");
-   chassis.calibrate();
-	/*while (true) { // infinite loop
-        // print measurements from the adi encoder
-        pros::lcd::print(0, "ADI Encoder H: %i", horizontal_encoder.get_value());
-        pros::lcd::print(1, "ADI Encoder V: %i", vertical_encoder.get_value());
-        // print measurements from the rotation sensor
-        pros::delay(10); // delay to save resources. DO NOT REMOVE
-    }*/
+    chassis.calibrate();
 }
