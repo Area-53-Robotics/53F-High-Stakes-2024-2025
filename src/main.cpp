@@ -1,5 +1,8 @@
 #include "main.h"
+#include "pros/misc.h"
 #include "variables.h"
+
+//Testing
 
 void disabled() {}
 
@@ -45,9 +48,9 @@ void opcontrol() {
      	}
 
       // -- Intake funtion -- //
-      if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+      if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
          intake.move(127);
-      }else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      }else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
          intake.move(-127);
       }else {
          intake.move(0);
