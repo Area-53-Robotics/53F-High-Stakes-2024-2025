@@ -2,8 +2,6 @@
 #include "pros/misc.h"
 #include "variables.h"
 
-//Testing 1
-
 void disabled() {}
 
 void competition_initialize() {}
