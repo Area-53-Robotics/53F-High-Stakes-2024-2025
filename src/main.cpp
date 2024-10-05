@@ -2,7 +2,7 @@
 #include "pros/misc.h"
 #include "variables.h"
 
-//Testing
+//Testing 1
 
 void disabled() {}
 
@@ -11,7 +11,7 @@ void competition_initialize() {}
 void opcontrol() {
 	while (true) {
 
-      // -- Getting Tracking Wheel Postion -- // 
+      // -- Getting Tracking Wheel Postion -- //
       pros::lcd::print(0, "ADI Encoder H: %i", horizontal_encoder.get_value());
       pros::lcd::print(1, "ADI Encoder V: %i", vertical_encoder.get_value());
 
