@@ -30,7 +30,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup leftMotors({-6, 7, -11}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({20, 4, -5}, pros::MotorGearset::blue);
 
-pros::Motor intake(16);
+pros::Motor intake(18);
 
 pros::adi::DigitalOut clamp ('C');
 
@@ -112,15 +112,15 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 // -- Initialize -- //
 void initialize() {
    pros::lcd::initialize();
-   pros::lcd::print(3, "//----- 53F -----/");
    chassis.calibrate();
+   pros::lcd::print(3, "//----- Initialize Complete -----//");
 }
 
 ASSET(testing_txt);
 
 void autonomous() {
-   chassis.setPose(-48.735, -22.362, 180);
-   chassis.follow(testing_txt, 15, 20000);
+   //chassis.setPose(-48.735, -22.362, 180);
+   //chassis.follow(testing_txt, 15, 20000);
    while (true) {
       lemlib::Pose pose = chassis.getPose();
 
@@ -142,8 +142,12 @@ void opcontrol() {
 	while (true) {
 
       // -- Getting Tracking Wheel Postion -- //
-      pros::lcd::print(0, "ADI Encoder H: %i", horizontal_encoder.get_value());
-      pros::lcd::print(1, "ADI Encoder V: %i", vertical_encoder.get_value());
+      lemlib::Pose pose = chassis.getPose();
+
+      // Display raw values on the VEX controller
+      pros::lcd::print(0, "X: %f", pose.x);  // Display X value on line 0
+      pros::lcd::print(1, "Y: %f", pose.y);  // Display Y value on line 1
+      pros::lcd::print(2, "Theta: %f", pose.theta);  // Display Theta value on line 2
 
       // -- Getting Y position for Left and Right joysticks -- //
       int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -157,10 +161,12 @@ void opcontrol() {
       }
 
      	if (reverseDT == false && arcade == false) {
-     		controller.print(0, 0, "Arcade(B):_OFF__________");
+         controller.print(0, 0, "Reverse(A):_OFF_________");
+         pros::lcd::print(4, "/ Arcade Drive and Reverse Drive OFF /");
      		chassis.tank(leftY, rightY);
      	}else if (reverseDT == true && arcade == false) {
      		controller.print(0, 0, "Reverse(A):_ON__________");
+         pros::lcd::print(4, "/ Reverse DriveTrain ON /");
      		chassis.tank(-rightY, -leftY);
      	}
 
@@ -171,17 +177,21 @@ void opcontrol() {
 
      	if (arcade == true && reverseDT == false) {
 			controller.print(0, 0, "Arcade(B):_ON__________");
+         pros::lcd::print(4, "/ Arcade Drive ON /");
      		chassis.arcade(rightY, rightX);
      	}else if (arcade == true && reverseDT == true) {
-     		controller.print(0, 0, "Rev(A)_&_cade(B):_ON__________");
+     		controller.print(0, 0, "Rev(A)&Cade(B):_ON__________");
+         pros::lcd::print(4, "/ Arcade Drive and Reverse Drive ON /");
      		chassis.arcade(-rightY, rightX);
      	}
 
       // -- Intake funtion -- //
-      if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+      if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
          intake.move(127);
-      }else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+         pros::lcd::print(5, "/ Intaking /");
+      }else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
          intake.move(-127);
+         pros::lcd::print(5, "/ Outtaking /");
       }else {
          intake.move(0);
       }
@@ -194,8 +204,10 @@ void opcontrol() {
 
      	if (clampON == true) {
      		clamp.set_value(HIGH);
+         pros::lcd::print(5, "/ Clamp Activated /");
      	}else {
      		clamp.set_value(LOW);
+         pros::lcd::print(5, "/ Clamp Deactivated /");
      	}
     
       // Delay to save resources
