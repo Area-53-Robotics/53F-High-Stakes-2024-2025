@@ -3,6 +3,8 @@
 #include "pros/misc.h"
 #include "pros/rtos.hpp"
 #include "lemlib/api.hpp"
+#include <algorithm>
+#include <string>
 
 void disabled() {}
 
@@ -24,6 +26,9 @@ void on_center_button() {
 bool reverseDT = false;
 bool arcade = false;
 bool clampON = false;
+bool intakeToggle = false;
+bool outtakeToggle = false;
+int stopIntake = 0; 
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -33,6 +38,7 @@ pros::MotorGroup rightMotors({20, 4, -5}, pros::MotorGearset::blue);
 pros::Motor intake(18);
 
 pros::adi::DigitalOut clamp ('C');
+
 
 // -- Imu -- //
 pros::Imu imu(10);
@@ -116,11 +122,25 @@ void initialize() {
    pros::lcd::print(3, "//----- Initialize Complete -----//");
 }
 
-ASSET(testing_txt);
+//ASSET(testing_txt);
 
 void autonomous() {
-   //chassis.setPose(-48.735, -22.362, 180);
-   //chassis.follow(testing_txt, 15, 20000);
+   chassis.setPose(0, 0, 0);
+   chassis.moveToPoint(0, -21, 1000, {.forwards = false});
+   chassis.waitUntilDone();
+   chassis.turnToHeading(25, 1000);
+   chassis.waitUntilDone();
+   chassis.setPose(0, 0, 0);
+   chassis.moveToPoint(0, -10.5, 1000, {.forwards = false, .maxSpeed = 50});
+   chassis.waitUntilDone();
+   pros::delay(200);
+   clamp.set_value(HIGH);
+   intake.move(127);
+   pros::delay(3000);
+   intake.move(-127);
+   pros::delay(1000);
+   intake.move(0);
+   chassis.setPose(0.00, 0.00, 0.00);
    while (true) {
       lemlib::Pose pose = chassis.getPose();
 
@@ -133,12 +153,16 @@ void autonomous() {
 
       controller.set_text(2, 0, "Theta: ");
       controller.set_text(2, 7, std::to_string(pose.theta).c_str());
+
+      /*pros::lcd::print(0, "X: %f", pose.x);  // Display X value on line 0
+      pros::lcd::print(1, "Y: %f", pose.y);  // Display Y value on line 1
+      pros::lcd::print(2, "Theta: %f", pose.theta);  // Display Theta value on line 2*/
    }
 }
 
 //Open Control (Driver Control)
 void opcontrol() {
-   
+   clamp.set_value(HIGH);
 	while (true) {
 
       // -- Getting Tracking Wheel Postion -- //
@@ -186,17 +210,37 @@ void opcontrol() {
      	}
 
       // -- Intake funtion -- //
-      if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-         intake.move(127);
+      if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+         //intakeToggle = true;
+         //outtakeToggle = false;
+         stopIntake = (stopIntake + 1);
          pros::lcd::print(5, "/ Intaking /");
-      }else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-         intake.move(-127);
+      }else if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
+         //intakeToggle = false;
+         //outtakeToggle = true;
+         stopIntake = (stopIntake - 1);
          pros::lcd::print(5, "/ Outtaking /");
       }else {
          intake.move(0);
       }
 
+      if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+         stopIntake = 0;
+      }
 
+      if(stopIntake == 1){
+         intake.move(127);
+         std::cout << stopIntake;
+      }else if(stopIntake == -1){
+         intake.move(-127);
+         std::cout << stopIntake;
+      }else{
+         //intakeToggle = false;
+         //outtakeToggle = false;
+         stopIntake = 0;
+         intake.move(0);
+         std::cout << stopIntake;
+      }
       // -- Clamp -- //
      	if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
      		clampON = !clampON;
