@@ -1,9 +1,13 @@
 #include "main.h"
+#include "pros/adi.h"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/motor_group.hpp"
 #include "pros/rtos.hpp"
 #include "lemlib/api.hpp"
 #include <algorithm>
+#include <cstddef>
+#include <optional>
 #include <string>
 
 void disabled() {}
@@ -35,7 +39,7 @@ pros::Controller controller(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup leftMotors({-6, 7, -11}, pros::MotorGearset::blue);
 pros::MotorGroup rightMotors({20, 4, -5}, pros::MotorGearset::blue);
 
-pros::Motor intake(18);
+pros::MotorGroup intake({18, -15});
 
 pros::adi::DigitalOut clamp ('C');
 
@@ -125,22 +129,57 @@ void initialize() {
 //ASSET(testing_txt);
 
 void autonomous() {
-   chassis.setPose(0, 0, 0);
-   chassis.moveToPoint(0, -21, 1000, {.forwards = false});
-   chassis.waitUntilDone();
-   chassis.turnToHeading(25, 1000);
-   chassis.waitUntilDone();
-   chassis.setPose(0, 0, 0);
-   chassis.moveToPoint(0, -10.5, 1000, {.forwards = false, .maxSpeed = 50});
-   chassis.waitUntilDone();
-   pros::delay(200);
    clamp.set_value(HIGH);
+   int auton = 2;
+   chassis.setPose(0, 0, 0);
+   if (auton == 1 /*Right side*/) {
+   chassis.moveToPoint(0, -20.5, 1000, {.forwards = false});
+   chassis.waitUntilDone();
+   chassis.turnToHeading(27, 500);
+   chassis.waitUntilDone();
+   chassis.setPose(0, 0, 0);
+   chassis.moveToPoint(0, -12, 2000, {.forwards = false, .maxSpeed = 40, .earlyExitRange = 0.1});
+   chassis.waitUntilDone();
+   clamp.set_value(LOW);
    intake.move(127);
-   pros::delay(3000);
+   pros::delay(1500);
    intake.move(-127);
-   pros::delay(1000);
+   pros::delay(500);
    intake.move(0);
    chassis.setPose(0.00, 0.00, 0.00);
+   chassis.turnToHeading(-125, 1000);
+   intake.move(127);
+   chassis.moveToPose(0, -15, -135, 2000);
+   pros::delay(3000);
+   intake.move(-127);
+}else if (auton == 2 /*left Side*/) {
+   chassis.moveToPoint(0, -20.5, 1000, {.forwards = false, .earlyExitRange = 0.1});
+   chassis.waitUntilDone();
+   chassis.turnToHeading(-27, 500);
+   chassis.waitUntilDone();
+   chassis.setPose(0, 0, 0);
+   chassis.moveToPoint(0, -12, 3000, {.forwards = false, .maxSpeed = 40, .earlyExitRange = 0.1});
+   chassis.waitUntilDone();
+   clamp.set_value(LOW);
+   intake.move(127);
+   pros::delay(1500);
+   intake.move(-127);
+   pros::delay(500);
+   intake.move(0);
+   chassis.setPose(0.00, 0.00, 0.00);
+   chassis.turnToHeading(130, 1000);
+   intake.move(127);
+   chassis.moveToPose(27, 4, 125, 5000, {.earlyExitRange = 0.1});
+   pros::delay(3000);
+   intake.move(-127);
+   pros::delay(500);
+   intake.move(0);
+   //chassis.setPose(0.00, 0.00, 0.00);
+   //chassis.turnToHeading(250, 500);
+   //chassis.moveToPose(29, -16, 158, 20000);
+}else if (auton == 3){
+   clamp.set_value(HIGH);
+}
    while (true) {
       lemlib::Pose pose = chassis.getPose();
 
@@ -185,11 +224,11 @@ void opcontrol() {
       }
 
      	if (reverseDT == false && arcade == false) {
-         controller.print(0, 0, "Reverse(A):_OFF_________");
+         controller.print(1, 0, "Reverse(A):_OFF_________");
          pros::lcd::print(4, "/ Arcade Drive and Reverse Drive OFF /");
      		chassis.tank(leftY, rightY);
      	}else if (reverseDT == true && arcade == false) {
-     		controller.print(0, 0, "Reverse(A):_ON__________");
+     		controller.print(1, 0, "Reverse(A):_ON__________");
          pros::lcd::print(4, "/ Reverse DriveTrain ON /");
      		chassis.tank(-rightY, -leftY);
      	}
@@ -200,17 +239,26 @@ void opcontrol() {
       }
 
      	if (arcade == true && reverseDT == false) {
-			controller.print(0, 0, "Arcade(B):_ON__________");
+			controller.print(1, 0, "Arcade(B):_ON__________");
          pros::lcd::print(4, "/ Arcade Drive ON /");
      		chassis.arcade(rightY, rightX);
      	}else if (arcade == true && reverseDT == true) {
-     		controller.print(0, 0, "Rev(A)&Cade(B):_ON__________");
+     		controller.print(1, 0, "Rev(A)&Cade(B):ON__________");
          pros::lcd::print(4, "/ Arcade Drive and Reverse Drive ON /");
      		chassis.arcade(-rightY, rightX);
      	}
 
       // -- Intake funtion -- //
-      if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
+
+      if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+         intake.move(127);
+      }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+         intake.move(-127);
+      }else {
+         intake.move(0);
+      }
+
+      /*if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
          //intakeToggle = true;
          //outtakeToggle = false;
          stopIntake = (stopIntake + 1);
@@ -240,7 +288,9 @@ void opcontrol() {
          stopIntake = 0;
          intake.move(0);
          std::cout << stopIntake;
-      }
+      }*/
+
+
       // -- Clamp -- //
      	if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
      		clampON = !clampON;
