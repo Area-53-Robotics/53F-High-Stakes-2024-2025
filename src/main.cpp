@@ -150,8 +150,11 @@ void autonomous() {
    chassis.turnToHeading(-125, 1000);
    intake.move(127);
    chassis.moveToPose(0, -15, -135, 2000);
-   pros::delay(3000);
+   chassis.moveToPose(12, 10, 125, 1000, {.forwards = false, .maxSpeed = 127});
+   pros::delay(4000);
    intake.move(-127);
+   pros::delay(500);
+   intake.move(0);
 }else if (auton == 2 /*left Side*/) {
    chassis.moveToPoint(0, -20.5, 1000, {.forwards = false, .earlyExitRange = 0.1});
    chassis.waitUntilDone();
@@ -169,14 +172,15 @@ void autonomous() {
    chassis.setPose(0.00, 0.00, 0.00);
    chassis.turnToHeading(130, 1000);
    intake.move(127);
-   chassis.moveToPose(27, 4, 125, 5000, {.earlyExitRange = 0.1});
-   pros::delay(3000);
+   chassis.moveToPose(27, 4, 125, 5000, {.maxSpeed = 127, .earlyExitRange = 0.1});
+   chassis.moveToPose(12, 10, 125, 1000, {.forwards = false, .maxSpeed = 127});
+   pros::delay(4000);
    intake.move(-127);
    pros::delay(500);
    intake.move(0);
-   //chassis.setPose(0.00, 0.00, 0.00);
-   //chassis.turnToHeading(250, 500);
-   //chassis.moveToPose(29, -16, 158, 20000);
+   //chassis.moveToPose(18, 7, 115, 20000, {.forwards = false});
+   //intake.move(127);
+   
 }else if (auton == 3){
    clamp.set_value(HIGH);
 }
