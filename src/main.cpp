@@ -72,7 +72,7 @@ lemlib::OdomSensors sensors(&vertical_tracking_wheel, // vertical tracking wheel
 
 
 // --- Pain Insanity Disaster (PID) ---//
-// angular PID controller
+// angular PID controller ()
 lemlib::ControllerSettings angular_controller(5, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               26, // derivative gain (kD)
@@ -130,7 +130,7 @@ void initialize() {
 
 void autonomous() {
    clamp.set_value(HIGH);
-   int auton = 2;
+   int auton = 3;
    chassis.setPose(0, 0, 0);
    if (auton == 1 /*Right side*/) {
    chassis.moveToPoint(0, -20.5, 1000, {.forwards = false});
@@ -190,9 +190,45 @@ void autonomous() {
    //pros::delay(500);
    //intake.move(-127);
    
-}else if (auton == 3){
+}else if (auton == 3 /*skills*/){
+   intake.move(-127);
+   pros::delay(500);
+   intake.move(0);
+
+   pros::delay(100);
+   chassis.setPose(0, 0, 0);
+   chassis.moveToPoint(0, 12, 1000);
+   chassis.waitUntilDone();
+   chassis.turnToHeading(90, 750);
+   chassis.waitUntilDone();
    clamp.set_value(HIGH);
+   chassis.setPose(0, 12, 90);
+   chassis.moveToPose(-16, 12, 90, 1000, {.forwards = false});
+   chassis.waitUntilDone();
+   pros::delay(100);
+   clamp.set_value(LOW);
+   chassis.moveToPose(-24, 12, 90, 1000, {.forwards = false});
+   chassis.waitUntilDone();
+
+   chassis.turnToHeading(0, 700);
+   chassis.waitUntilDone();
+   chassis.setPose(-24, 12, 0);
+   chassis.moveToPose(-24, 35, 0, 1000);
+   intake.move(127);
+   chassis.waitUntilDone();
+   pros::delay(1000);
+   intake.move(0);
+
+   /*chassis.turnToHeading(270, 500);
+   chassis.waitUntilDone();
+   chassis.setPose(-24, 33, 270);
+   chassis.moveToPose(-48, 35, 270, 1000);
+   intake.move(127);
+   chassis.waitUntilDone();
+   pros::delay(1000);
+   intake.move(0);*/
 }
+//-----------------------------------//
    while (true) {
       lemlib::Pose pose = chassis.getPose();
 
@@ -262,7 +298,6 @@ void opcontrol() {
      	}
 
       // -- Intake funtion -- //
-
       if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
          intake.move(127);
       }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
@@ -319,5 +354,7 @@ void opcontrol() {
     
       // Delay to save resources
       pros::delay(25);
+
+
    }//*/
 }
