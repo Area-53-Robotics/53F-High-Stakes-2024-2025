@@ -27,7 +27,7 @@ void on_center_button() {
 }
 
 // -- Auton -- //
-int auton = 2;
+int auton = 5;
 /*          1 = Red Right
             2 = Red Left
             3 = Blue Right
@@ -35,6 +35,7 @@ int auton = 2;
             5 = Skills
             6 = Blue goal rush
 */
+
 void autonomous() {
    if (auton == 1) {
       auton_redRight();

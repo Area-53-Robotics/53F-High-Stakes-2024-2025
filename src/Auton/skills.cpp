@@ -10,13 +10,13 @@ void auton_skills() {
 
       pros::delay(100);
       chassis.setPose(0, 0, 0);
-      chassis.moveToPoint(0, 12, 1000);
+      chassis.moveToPoint(0, 13, 1000);
       chassis.waitUntilDone();
       chassis.turnToHeading(90, 750);
       chassis.waitUntilDone();
       clamp.set_value(HIGH);
       chassis.setPose(0, 12, 90);
-      chassis.moveToPose(-16, 12, 90, 1000, {.forwards = false});
+      chassis.moveToPose(-16, 12, 90, 1000, {.forwards = false, .maxSpeed = 50});
       chassis.waitUntilDone();
       pros::delay(100);
       clamp.set_value(LOW);
@@ -26,20 +26,27 @@ void auton_skills() {
       chassis.turnToHeading(0, 700);
       chassis.waitUntilDone();
       chassis.setPose(-24, 12, 0);
-      chassis.moveToPose(-24, 35, 0, 1000);
+      chassis.moveToPose(-24, 33, 0, 1000);
       intake.move(127);
       chassis.waitUntilDone();
       pros::delay(1000);
+      intake.move(-127);
+      pros::delay(200);
       intake.move(0);
 
       chassis.turnToHeading(268, 700);
       chassis.waitUntilDone();
       chassis.setPose(-24, 33, 270);
-      /*chassis.moveToPose(-48, 35, 270, 1000);
+      chassis.moveToPose(-46, 33, 270, 1000);
       intake.move(127);
       chassis.waitUntilDone();
       pros::delay(1000);
-      intake.move(0);*/
+      intake.move(-127);
+      pros::delay(200);
+      intake.move(0);
+      chassis.turnToHeading(180, 500);
+      chassis.waitUntilDone();
+      //chassis.setPose(-48, 34, 180);
 }
    while (true) {
       lemlib::Pose pose = chassis.getPose();
