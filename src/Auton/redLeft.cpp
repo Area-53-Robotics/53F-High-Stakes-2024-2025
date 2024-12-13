@@ -47,7 +47,11 @@ void auton_redLeft() {
       pros::delay(2000);
       intake.move(-127);
       pros::delay(500);
+      intake.move(127);
+      pros::delay(1000);
+      pros::delay(500);
       intake.move(0);
+
 
       //-----------------------------------------------//
 

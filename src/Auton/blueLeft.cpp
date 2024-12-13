@@ -4,30 +4,35 @@ void auton_blueLeft() {
   chassis.setPose(0, 0, 0);
    if (auton == 4) {
       clamp.set_value(HIGH);
-      chassis.moveToPoint(0, -20.5, 1000, {.forwards = false, .earlyExitRange = 0.1});
+      chassis.moveToPoint(0, -17, 1000, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
-      chassis.turnToHeading(-27, 500);
+      chassis.turnToHeading(-30, 500);
       chassis.waitUntilDone();
-      chassis.setPose(0, 0, 0);
-      chassis.moveToPoint(0, -12, 1000, {.forwards = false, .maxSpeed = 40, .earlyExitRange = 0.1});
+      chassis.setPose(0, -17, -30);
+      chassis.moveToPose(5.5, -25, -30, 500, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
       clamp.set_value(LOW);
+      pros::delay(100);
       intake.move(127);
-      pros::delay(2000);
-      intake.move(-127);
       pros::delay(1000);
+      intake.move(-127);
+      pros::delay(500);
       intake.move(0);
 
-      chassis.setPose(0.00, 0.00, 0.00);
-      chassis.turnToHeading(125, 1000);
+      chassis.moveToPose(10, -31, -30, 1500, {.forwards = false, .earlyExitRange = 0.01});
+      chassis.waitUntilDone();
+      chassis.turnToHeading(89, 750);
+      chassis.waitUntilDone();
+      chassis.setPose(10, -31, 90);
       intake.move(127);
-      chassis.moveToPose(27, 4, 125, 1500, {.maxSpeed = 127, .earlyExitRange = 0.1});
+      chassis.moveToPose(30, -31, 90, 1000, {.earlyExitRange = 0.1});
       chassis.waitUntilDone();
-      pros::delay(3000);
+      pros::delay(750);
+      chassis.moveToPose(20, -31, 90, 1000, {.forwards = false, .earlyExitRange = 0.1});
+      pros::delay(1000);
+      intake.move(-127);
+      pros::delay(500);
       intake.move(0);
-      chassis.waitUntilDone();
-      chassis.turnToHeading(200, 500);
-      chassis.waitUntilDone();
 }
    while (true) {
       lemlib::Pose pose = chassis.getPose();

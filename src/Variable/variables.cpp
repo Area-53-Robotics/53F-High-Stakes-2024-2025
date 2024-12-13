@@ -27,7 +27,7 @@ void on_center_button() {
 }
 
 // -- Auton -- //
-int auton = 5;
+int auton = 4;
 /*          1 = Red Right
             2 = Red Left
             3 = Blue Right
