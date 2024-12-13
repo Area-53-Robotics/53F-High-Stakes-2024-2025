@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/adi.h"
 #include "variables.h"
 
 void auton_skills() {
@@ -37,16 +38,39 @@ void auton_skills() {
       chassis.turnToHeading(268, 700);
       chassis.waitUntilDone();
       chassis.setPose(-24, 33, 270);
-      chassis.moveToPose(-46, 33, 270, 1000);
+      chassis.moveToPose(-45, 33, 270, 1000);
       intake.move(127);
       chassis.waitUntilDone();
       pros::delay(1000);
       intake.move(-127);
       pros::delay(200);
       intake.move(0);
-      chassis.turnToHeading(180, 500);
+      chassis.turnToHeading(190, 500);
       chassis.waitUntilDone();
-      //chassis.setPose(-48, 34, 180);
+      chassis.setPose(-45, 33, 180);
+      chassis.moveToPose(-45, 5, 180, 10000, {.maxSpeed = 50, .earlyExitRange = 0.01});
+      intake.move(127);
+      pros::delay(2000);
+      intake.move(-127);
+      pros::delay(500);
+      intake.move(127);
+      pros::delay(2000);
+      intake.move(-127);
+      pros::delay(500);
+      intake.move(127);
+      pros::delay(2000);
+      intake.move(0);
+      chassis.waitUntilDone();
+      chassis.turnToHeading(35, 1000);
+      chassis.waitUntilDone();
+      chassis.setPose(-45, 5, 35);
+      chassis.moveToPoint(-52, -2, 1000, {.forwards = false});
+      chassis.waitUntilDone();
+      clamp.set_value(HIGH);
+      chassis.moveToPose(-20, 20, 90, 3000);
+      chassis.waitUntilDone();
+      chassis.moveToPose(29, 0, 90, 2000, {.forwards = false});
+
 }
    while (true) {
       lemlib::Pose pose = chassis.getPose();

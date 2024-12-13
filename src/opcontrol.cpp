@@ -49,7 +49,7 @@ void opcontrol() {
      		chassis.arcade(-rightY, rightX);
      	}
 
-      // -- Intake funtion -- //
+      // -- Intake function (Hold) -- //
       if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
          intake.move(127);
       }else if(controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
@@ -58,6 +58,7 @@ void opcontrol() {
          intake.move(0);
       }
 
+      // -- Intake function (Toggle) -- //
       /*if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
          //intakeToggle = true;
          //outtakeToggle = false;
@@ -106,7 +107,5 @@ void opcontrol() {
     
       // Delay to save resources
       pros::delay(25);
-
-
-   }//*/
+   }
 }

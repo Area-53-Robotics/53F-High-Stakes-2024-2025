@@ -34,6 +34,7 @@ int auton = 5;
             4 = Blue Left
             5 = Skills
             6 = Blue goal rush
+            7 = Red goal rush
 */
 
 void autonomous() {
@@ -48,7 +49,9 @@ void autonomous() {
    }else if (auton == 5) {
       auton_skills();
    }else if (auton == 6) {
-      auton_blueGold();
+      auton_blueGoal();
+   }else if (auton == 7) {
+      auton_redGoal();
    }
 }
 

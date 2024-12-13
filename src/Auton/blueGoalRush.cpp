@@ -1,7 +1,7 @@
 #include "main.h"
 #include "variables.h"
 
-void auton_blueGold() {
+void auton_blueGoal() {
   chassis.setPose(0, 0, 0);
    if (auton == 6) {
       leftMotors.move(-25);

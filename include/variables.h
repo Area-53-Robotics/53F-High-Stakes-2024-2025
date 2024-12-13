@@ -26,7 +26,8 @@ void auton_redLeft();
 void auton_blueRight();
 void auton_blueLeft();
 void auton_skills();
-void auton_blueGold();
+void auton_blueGoal();
+void auton_redGoal();
 
 // Variables
 extern bool reverseDT;
