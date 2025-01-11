@@ -28,6 +28,9 @@ void auton_blueLeft();
 void auton_skills();
 void auton_blueGoal();
 void auton_redGoal();
+void WRedLeft();
+void WPRedLeft();
+
 
 // Variables
 extern bool reverseDT;

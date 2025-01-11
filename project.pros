@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "53F_HT Blue Left",
+        "project_name": "Empty Slot",
         "target": "v5",
         "templates": {
             "LemLib": {
