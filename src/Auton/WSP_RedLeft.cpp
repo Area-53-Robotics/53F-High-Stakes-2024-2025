@@ -1,6 +1,6 @@
 #include "variables.h"
 
-void WPRedLeft() {
+void WSP_RedLeft() {
   chassis.setPose(0, 0, 0);
    if (auton == 9) {
 	    leftMotors.move(-50);

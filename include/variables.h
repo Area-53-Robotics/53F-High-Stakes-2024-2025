@@ -28,8 +28,8 @@ void auton_blueLeft();
 void auton_skills();
 void auton_blueGoal();
 void auton_redGoal();
-void WRedLeft();
-void WPRedLeft();
+void WS_RedLeft();
+void WSP_RedLeft();
 
 
 // Variables

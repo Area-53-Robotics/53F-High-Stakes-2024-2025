@@ -1,29 +1,24 @@
-# Parameters
-param (
-    [string]$Keyword,  # Optional keyword for predefined auton lists
-    [int]$Slot         # The auton slot number (e.g., 1-19), used if no keyword is given
-)
-
 # File paths
-$variablesFile = "C:\Users\Admin\Documents\Robotics\53F\src\Variable\variables.cpp"
-$projectFile = "C:\Users\Admin\Documents\Robotics\53F\project.pros"
+$variablesFile = ".\src\Variable\variables.cpp"
+$projectFile = ".\project.pros"
 
 # Project names based on auton slot
 $projectNames = @{
-    1 = "53F_HS Red Right";
-    2 = "53F_HS Red Left";
+    1 = "53F_HS Blue GoalRush";
+    2 = "53F_HS Blue Left";
     3 = "53F_HS Blue Right";
-    4 = "53F_HS Blue Left";
-    5 = "53F_HS Skills";
-    6 = "53F_HS Blue Goal";
-    7 = "53F_HS Red Goal";
-    8 = "53F_HS WRedLeft";
-    9 = "53F_HS WPRedLeft";
+    4 = "53F_HS Red GoalRush";
+    5 = "53F_HS Red Left";
+    6 = "53F_HS Red Right";
+    7 = "53F_HS Skills";
+    8 = "53F_HS WS RedLeft";
+    9 = "53F_HS WSP RedLeft";
 }
 
 # Predefined auton lists for specific keywords
 $autonKeywords = @{
-    "red" = @(1, 2, 7, 8, 9, 5);  # Autons for "red"
+    "red" = @(4, 5, 6, 8, 9, 7);  # Autons for "red"
+    "blue" = @(1, 2, 3, 7);   # Autons for "blue"
 }
 
 # Determine the maximum slot number
@@ -37,46 +32,46 @@ function Upload-Code {
         [string]$ProjectName # Project name
     )
 
+    # Cap the upload slot at 8
+    $uploadSlot = if ($SlotNumber -gt 8) { 8 } else { $SlotNumber }
+
     # Update variables.cpp
-    (Get-Content $variablesFile) -replace 'int auton = \d+;', "int auton = $AutonValue;" | Set-Content $variablesFile
+    $content = Get-Content $variablesFile
+    # Search and replace the line with 'auton ='
+    $content = $content | ForEach-Object {
+        if ($_ -match 'int auton = ') {
+            "int auton = $AutonValue;"  # Replace the line with the updated auton value
+        } else {
+            $_  # Leave other lines as they are
+        }
+    }
+    $content | Set-Content $variablesFile
     Write-Host "Updated variables.cpp: Set auton to $AutonValue"
 
     # Update project.pros
     $projectContent = Get-Content $projectFile
     $projectContent = $projectContent -replace '"project_name": ".*",', "`"project_name"": ""$ProjectName`","
-    $projectContent = $projectContent -replace 'slot = \d+', "slot = $SlotNumber"
+    $projectContent = $projectContent -replace 'slot = \d+', "slot = $uploadSlot"
     $projectContent | Set-Content $projectFile
-    Write-Host "Updated project.pros: Set slot to $SlotNumber and project_name to '$ProjectName'"
+    Write-Host "Updated project.pros: Set slot to $uploadSlot and project_name to '$ProjectName'"
 
-    # Upload code to the specified slot
-    Write-Host "Uploading code to slot $SlotNumber..."
-    pros mu --slot $SlotNumber
+    # Upload code to the capped slot
+    Write-Host "Uploading code to slot $uploadSlot..."
+    pros mu --slot $uploadSlot
 }
 
-# Process based on keyword or slot number
-if ($Keyword) {
-    if ($autonKeywords.ContainsKey($Keyword)) {
-        $autonList = $autonKeywords[$Keyword]
-        $uploadSlot = 1
+# Main logic to detect input type
+if ($args.Count -eq 0) {
+    Write-Host "Error: No input provided. Please enter a number or keyword." -ForegroundColor Red
+    exit 1
+}
 
-        # Upload each auton in the list
-        foreach ($auton in $autonList) {
-            if ($projectNames.ContainsKey($auton)) {
-                Upload-Code -SlotNumber $uploadSlot -AutonValue $auton -ProjectName $projectNames[$auton]
-                $uploadSlot++
-            }
-        }
+$input = $args[0]
 
-        # Fill remaining slots with empty values
-        while ($uploadSlot -le 8) {
-            Upload-Code -SlotNumber $uploadSlot -AutonValue -1 -ProjectName "Empty Slot"
-            $uploadSlot++
-        }
-    } else {
-        Write-Host "Error: Unknown keyword '$Keyword'. Available options: $($autonKeywords.Keys -join ', ')." -ForegroundColor Red
-        exit 1
-    }
-} else {
+# Check if input is a valid number
+if ($input -match '^\d+$') {
+    $Slot = [int]$input
+
     # Validate the auton slot
     if ($Slot -lt 1 -or $Slot -gt $maxSlot) {
         Write-Host "Error: Invalid auton number '$Slot'. Please enter a valid auton number (1-$maxSlot)." -ForegroundColor Red
@@ -85,6 +80,27 @@ if ($Keyword) {
 
     # Default behavior for a single slot
     Upload-Code -SlotNumber $Slot -AutonValue $Slot -ProjectName $projectNames[$Slot]
+} elseif ($autonKeywords.ContainsKey($input)) {
+    # If input is a keyword, get the corresponding auton list
+    $autonList = $autonKeywords[$input]
+    $uploadSlot = 1
+
+    # Upload each auton in the list
+    foreach ($auton in $autonList) {
+        if ($projectNames.ContainsKey($auton)) {
+            Upload-Code -SlotNumber $uploadSlot -AutonValue $auton -ProjectName $projectNames[$auton]
+            $uploadSlot++
+        }
+    }
+
+    # Fill remaining slots with empty values
+    while ($uploadSlot -le 8) {
+        Upload-Code -SlotNumber $uploadSlot -AutonValue -1 -ProjectName "Empty Slot"
+        $uploadSlot++
+    }
+} else {
+    Write-Host "Error: Invalid input '$input'. Please enter a valid number or keyword." -ForegroundColor Red
+    exit 1
 }
 
 Write-Host "Done!"

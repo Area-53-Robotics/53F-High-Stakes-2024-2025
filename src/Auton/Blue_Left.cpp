@@ -1,9 +1,6 @@
-#include "main.h"
-#include "pros/adi.h"
-#include "pros/rtos.hpp"
 #include "variables.h"
 
-void auton_redLeft() {
+void auton_blueLeft() {
   chassis.setPose(0, 0, 0);
    if (auton == 2) {
       clamp.set_value(HIGH);
@@ -30,56 +27,12 @@ void auton_redLeft() {
       intake.move(127);
       chassis.moveToPose(30, -31, 90, 1000, {.earlyExitRange = 0.1});
       chassis.waitUntilDone();
-      pros::delay(2000);
-      intake.move(-127);
-      pros::delay(500);
-      intake.move(0);
-
-      //chassis.moveToPose(30, -41, 90, 1000, {.earlyExitRange = 0.1});
-      //chassis.waitUntilDone();
-      chassis.turnToHeading(179, 750);
-      chassis.waitUntilDone();
-      chassis.setPose(28, -31, 180);
-
-      chassis.moveToPose(28, -42, 180, 1000, {.maxSpeed = 25, .earlyExitRange = 0.1});
-      intake.move(127);
-      chassis.waitUntilDone();
-      pros::delay(2000);
-      intake.move(-127);
-      pros::delay(500);
-      intake.move(127);
+      pros::delay(750);
+      chassis.moveToPose(20, -31, 90, 1000, {.forwards = false, .earlyExitRange = 0.1});
       pros::delay(1000);
+      intake.move(-127);
       pros::delay(500);
       intake.move(0);
-
-
-      //-----------------------------------------------//
-
-      /*clamp.set_value(HIGH);
-      chassis.moveToPoint(0, -20.5, 1000, {.forwards = false, .earlyExitRange = 0.1});
-      chassis.waitUntilDone();
-      chassis.turnToHeading(-27, 500);
-      chassis.waitUntilDone();
-      chassis.setPose(0, 0, 0);
-      chassis.moveToPoint(0, -12, 1000, {.forwards = false, .maxSpeed = 40, .earlyExitRange = 0.1});
-      chassis.waitUntilDone();
-      clamp.set_value(LOW);
-      intake.move(127);
-      pros::delay(2000);
-      intake.move(-127);
-      pros::delay(1000);
-      intake.move(0);
-
-      chassis.setPose(0.00, 0.00, 0.00);
-      chassis.turnToHeading(125, 1000);
-      intake.move(127);
-      chassis.moveToPose(27, 4, 125, 1500, {.maxSpeed = 127, .earlyExitRange = 0.1});
-      chassis.waitUntilDone();
-      pros::delay(3000);
-      intake.move(0);
-      chassis.waitUntilDone();
-      chassis.turnToHeading(200, 500);
-      chassis.waitUntilDone();*/
 }
    while (true) {
       lemlib::Pose pose = chassis.getPose();

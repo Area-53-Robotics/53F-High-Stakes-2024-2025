@@ -1,15 +1,17 @@
+#include "main.h"
 #include "variables.h"
+#include <sys/_intsup.h>
 
-void auton_redRight() {
+void auton_blueGoal() {
   chassis.setPose(0, 0, 0);
    if (auton == 1) {
       clamp.set_value(HIGH);
       chassis.moveToPoint(0, -17, 1000, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
-      chassis.turnToHeading(30, 500);
+      chassis.turnToHeading(-30, 500);
       chassis.waitUntilDone();
-      chassis.setPose(0, -17, 30);
-      chassis.moveToPose(-5.5, -25, 30, 500, {.forwards = false, .earlyExitRange = 0.1});
+      chassis.setPose(0, -17, -30);
+      chassis.moveToPose(5.5, -25, -30, 500, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
       clamp.set_value(LOW);
       pros::delay(100);
@@ -18,21 +20,34 @@ void auton_redRight() {
       intake.move(-127);
       pros::delay(500);
       intake.move(0);
-      
-      chassis.moveToPose(-10, -31, 30, 1500, {.forwards = false, .earlyExitRange = 0.01});
+
+      chassis.moveToPose(10, -31, -30, 1500, {.forwards = false, .earlyExitRange = 0.01});
       chassis.waitUntilDone();
-      chassis.turnToHeading(-89, 750);
+      chassis.turnToHeading(89, 750);
       chassis.waitUntilDone();
-      chassis.setPose(-10, -31, -90);
+      chassis.setPose(10, -31, 90);
       intake.move(127);
-      chassis.moveToPose(-30, -31, -90, 1000, {.earlyExitRange = 0.1});
+      clamp.set_value(HIGH);
+      chassis.moveToPose(30, -31, 90, 1000, {.earlyExitRange = 0.1});
       chassis.waitUntilDone();
-      pros::delay(750);
-      chassis.moveToPose(-20, -31, -90, 1000, {.forwards = false, .earlyExitRange = 0.1});
+      pros::delay(200);
+      chassis.moveToPose(20, -31, 90, 1000, {.forwards = false, .earlyExitRange = 0.1});
+      intake.move(0);
+      chassis.waitUntilDone();
+
+      chassis.turnToHeading(0, 500, {.earlyExitRange = 0.1});
+      chassis.waitUntilDone();
+      chassis.setPose(20, -31, 0);
+      chassis.moveToPose(29.5, -50, -27, 2000, {.forwards = false, .maxSpeed = 50, .earlyExitRange = 0.1});
+      chassis.waitUntilDone();
+      clamp.set_value(LOW);
+      pros::delay(100);
+      intake.move(127);
       pros::delay(1000);
       intake.move(-127);
       pros::delay(500);
       intake.move(0);
+      //pros::delay(3000);
 }
    while (true) {
       lemlib::Pose pose = chassis.getPose();

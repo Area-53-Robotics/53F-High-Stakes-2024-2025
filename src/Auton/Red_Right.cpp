@@ -1,18 +1,15 @@
-#include "main.h"
-#include "pros/device.hpp"
-#include "pros/rtos.hpp"
 #include "variables.h"
 
-void auton_redGoal() {
+void auton_redRight() {
   chassis.setPose(0, 0, 0);
-   if (auton == 7) {
+   if (auton == 6) {
       clamp.set_value(HIGH);
-      chassis.moveToPoint(0, -16, 1000, {.forwards = false, .earlyExitRange = 0.01});
+      chassis.moveToPoint(0, -17, 1000, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
       chassis.turnToHeading(30, 500);
       chassis.waitUntilDone();
-      chassis.setPose(0, -16, 30);
-      chassis.moveToPose(-10, -29, 30, 1000, {.forwards = false, .maxSpeed = 40});
+      chassis.setPose(0, -17, 30);
+      chassis.moveToPose(-5.5, -25, 30, 500, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
       clamp.set_value(LOW);
       pros::delay(100);
@@ -21,24 +18,17 @@ void auton_redGoal() {
       intake.move(-127);
       pros::delay(500);
       intake.move(0);
-      chassis.turnToHeading(270, 750);
+      
+      chassis.moveToPose(-10, -31, 30, 1500, {.forwards = false, .earlyExitRange = 0.01});
       chassis.waitUntilDone();
-      chassis.setPose(-10, -29, 270);
-      clamp.set_value(HIGH);
-      chassis.moveToPose(-26, -29, 270, 500);
+      chassis.turnToHeading(-89, 750);
+      chassis.waitUntilDone();
+      chassis.setPose(-10, -31, -90);
       intake.move(127);
-      pros::delay(1250);
-      intake.move(0);
-      chassis.moveToPose(-20, -29, 270, 1000, {.forwards = false});
+      chassis.moveToPose(-30, -31, -90, 1000, {.earlyExitRange = 0.1});
       chassis.waitUntilDone();
-      chassis.turnToHeading(30, 750);
-      chassis.waitUntilDone();
-      chassis.setPose(-20, -29, 30);
-      chassis.moveToPose(-27, -42, 30, 1000, {.forwards = false});
-      chassis.waitUntilDone();
-      clamp.set_value(HIGH);
-      pros::delay(100);
-      intake.move(127);
+      pros::delay(750);
+      chassis.moveToPose(-20, -31, -90, 1000, {.forwards = false, .earlyExitRange = 0.1});
       pros::delay(1000);
       intake.move(-127);
       pros::delay(500);

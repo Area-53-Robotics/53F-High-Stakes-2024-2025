@@ -28,36 +28,37 @@ void on_center_button() {
 
 // -- Auton -- //
 int auton = -1;
-/*          1 = Red Right
-            2 = Red Left
+/*          
+            1 = Blue GoalRush
+            2 = Blue Left
             3 = Blue Right
-            4 = Blue Left
-            5 = Skills
-            6 = Blue goal rush
-            7 = Red goal rush
-            8 = WRedLeft
-            9 = WPRedLeft
+            4 = Red GoalRush
+            5 = Red Left
+            6 = Red Right
+            7 = Skills
+            8 = WS RedLeft
+            9 = WSP RedLeft
 */
 
 void autonomous() {
    if (auton == 1) {
-      auton_redRight();
+      auton_blueGoal();
    }else if (auton == 2) {
-      auton_redLeft();
+      auton_blueLeft();
    }else if (auton == 3) {
       auton_blueRight();
    }else if (auton == 4) {
-      auton_blueLeft();
-   }else if (auton == 5) {
-      auton_skills();
-   }else if (auton == 6) {
-      auton_blueGoal();
-   }else if (auton == 7) {
       auton_redGoal();
+   }else if (auton == 5) {
+      auton_redLeft();
+   }else if (auton == 6) {
+      auton_redRight();
+   }else if (auton == 7) {
+      auton_skills();
    }else if (auton == 8) {
-      WRedLeft();
+      WS_RedLeft();
    }else if (auton == 9) {
-      WPRedLeft();
+      WSP_RedLeft();
    }
 }
 

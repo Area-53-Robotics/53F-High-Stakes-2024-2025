@@ -4,7 +4,7 @@
 
 void auton_skills() {
   chassis.setPose(0, 0, 0);
-   if (auton == 5) {
+   if (auton == 7) {
       intake.move(-127);
       pros::delay(500);
       intake.move(0);

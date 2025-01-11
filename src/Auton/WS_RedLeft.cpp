@@ -1,6 +1,6 @@
 #include "variables.h"
 
-void WRedLeft() {
+void WS_RedLeft() {
   chassis.setPose(0, 0, 0);
    if (auton == 8) {
 	    leftMotors.move(-50);
