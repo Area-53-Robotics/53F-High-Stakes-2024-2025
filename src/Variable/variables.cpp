@@ -27,7 +27,7 @@ void on_center_button() {
 }
 
 // -- Auton -- //
-int auton = -1;
+int auton = 9;
 /*          
             1 = Blue GoalRush
             2 = Blue Left

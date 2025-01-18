@@ -3,16 +3,16 @@
 void WS_RedLeft() {
   chassis.setPose(0, 0, 0);
    if (auton == 8) {
-	    leftMotors.move(-50);
-      rightMotors.move(-50);
-      pros::delay(640);
+	    leftMotors.move(-55);
+      rightMotors.move(-55);
+      pros::delay(685);
       leftMotors.move(0);
       rightMotors.move(0);
-      chassis.turnToHeading(91, 10000, {.maxSpeed = 50});
+      chassis.turnToHeading(91, 10000, {.maxSpeed = 55});
       chassis.waitUntilDone();
       leftMotors.move(-25);
       rightMotors.move(-25);
-      pros::delay(650);
+      pros::delay(670);
       intake.move(-127);
       pros::delay(100);
       leftMotors.move(0);

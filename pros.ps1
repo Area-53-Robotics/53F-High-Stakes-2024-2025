@@ -4,21 +4,22 @@ $projectFile = ".\project.pros"
 
 # Project names based on auton slot
 $projectNames = @{
-    1 = "53F_HS Blue GoalRush";
-    2 = "53F_HS Blue Left";
-    3 = "53F_HS Blue Right";
-    4 = "53F_HS Red GoalRush";
-    5 = "53F_HS Red Left";
-    6 = "53F_HS Red Right";
-    7 = "53F_HS Skills";
-    8 = "53F_HS WS RedLeft";
-    9 = "53F_HS WSP RedLeft";
+    1 = "53F Blue GoalRush";
+    2 = "53F Blue Left";
+    3 = "53F Blue Right";
+    4 = "53F Red GoalRush";
+    5 = "53F Red Left";
+    6 = "53F Red Right";
+    7 = "53F Skills";
+    8 = "53F WS RedLeft";
+    9 = "53F WSP RedLeft";
 }
 
 # Predefined auton lists for specific keywords
 $autonKeywords = @{
     "red" = @(4, 5, 6, 8, 9, 7);  # Autons for "red"
     "blue" = @(1, 2, 3, 7);   # Autons for "blue"
+    "both" = @(1, 2, 3, 4, 5, 6, 9, 7);
 }
 
 # Determine the maximum slot number
@@ -60,26 +61,37 @@ function Upload-Code {
     pros mu --slot $uploadSlot
 }
 
-# Main logic to detect input type
+# Main logic to detect input type and process arguments
 if ($args.Count -eq 0) {
     Write-Host "Error: No input provided. Please enter a number or keyword." -ForegroundColor Red
     exit 1
 }
 
+# Parse arguments
 $input = $args[0]
+$specifiedSlot = $args -contains "--slot" ? ($args[$args.IndexOf("--slot") + 1] -as [int]) : $null
 
 # Check if input is a valid number
 if ($input -match '^\d+$') {
-    $Slot = [int]$input
+    $Auton = [int]$input
 
-    # Validate the auton slot
-    if ($Slot -lt 1 -or $Slot -gt $maxSlot) {
-        Write-Host "Error: Invalid auton number '$Slot'. Please enter a valid auton number (1-$maxSlot)." -ForegroundColor Red
+    # Validate the auton number
+    if ($Auton -lt 1 -or $Auton -gt $maxSlot) {
+        Write-Host "Error: Invalid auton number '$Auton'. Please enter a valid auton number (1-$maxSlot)." -ForegroundColor Red
         exit 1
     }
 
-    # Default behavior for a single slot
-    Upload-Code -SlotNumber $Slot -AutonValue $Slot -ProjectName $projectNames[$Slot]
+    # Determine upload slot
+    $uploadSlot = $specifiedSlot -ne $null ? $specifiedSlot : $Auton
+
+    # Default behavior for a single auton slot
+    if ($uploadSlot -lt 1 -or $uploadSlot -gt 8) {
+        Write-Host "Error: Upload slot must be between 1 and 8." -ForegroundColor Red
+        exit 1
+    }
+
+    Upload-Code -SlotNumber $uploadSlot -AutonValue $Auton -ProjectName $projectNames[$Auton]
+
 } elseif ($autonKeywords.ContainsKey($input)) {
     # If input is a keyword, get the corresponding auton list
     $autonList = $autonKeywords[$input]

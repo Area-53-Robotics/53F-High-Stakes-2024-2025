@@ -3,16 +3,16 @@
 void WSP_RedLeft() {
   chassis.setPose(0, 0, 0);
    if (auton == 9) {
-	    leftMotors.move(-50);
-      rightMotors.move(-50);
-      pros::delay(640);
+	    leftMotors.move(-55);
+      rightMotors.move(-55);
+      pros::delay(635);
       leftMotors.move(0);
       rightMotors.move(0);
-      chassis.turnToHeading(91, 10000, {.maxSpeed = 50});
+      chassis.turnToHeading(91, 10000, {.maxSpeed = 55});
       chassis.waitUntilDone();
-      leftMotors.move(-25);
-      rightMotors.move(-25);
-      pros::delay(650);
+      leftMotors.move(-55);
+      rightMotors.move(-55);
+      pros::delay(665);
       intake.move(-127);
       pros::delay(100);
       leftMotors.move(0);
@@ -23,35 +23,19 @@ void WSP_RedLeft() {
       chassis.setPose(0, 0, 0);
       chassis.moveToPoint(0, 7, 750, {.earlyExitRange = 0.01});
       chassis.waitUntilDone();
-      chassis.turnToHeading(150, 1000);
-      chassis.waitUntilDone();
-      chassis.setPose(0, 7, 150);
+      chassis.setPose(0, 7, 0);
       clamp.set_value(HIGH);
-      chassis.moveToPose(-22.5, 35, 149, 1500, {.forwards = false, .maxSpeed = 75, .earlyExitRange = 0.01});
+      chassis.moveToPose(-14.5, 50, 135, 3000, {.forwards = false, .maxSpeed = 75, .earlyExitRange = 0.01});
       chassis.waitUntilDone();
       pros::delay(200);
       clamp.set_value(LOW);
       pros::delay(500);
+      chassis.setPose(-12.5, 50, 135);
 
-      chassis.moveToPose(-22.5, 37, 150, 750, {.forwards = false, .earlyExitRange = 0.01});
-      chassis.waitUntilDone();
-      chassis.turnToHeading(268, 750);
-      chassis.waitUntilDone();
-      chassis.setPose(-22.5, 37, 270);
-      intake.move(127);
-      chassis.moveToPose(-33, 37, 273, 10000, {.minSpeed = 115, .earlyExitRange = 0.1});
-      chassis.waitUntilDone();
-      pros::delay(1750);
-      intake.move(-100);
-      pros::delay(250);
-      intake.move(0);
 
-      chassis.turnToHeading(90, 750);
-      chassis.waitUntilDone();
-      chassis.setPose(-33, 37, 90);
-      chassis.moveToPose(-10, 37, 90, 1000, {.maxSpeed = 127, .earlyExitRange = 2});
-      chassis.waitUntilDone();
-      chassis.moveToPose(0, 37, 90, 5000, {.maxSpeed = 50});
+
+      //chassis.turnToHeading(260, 750);
+      
 
 }
 	while (true) {
