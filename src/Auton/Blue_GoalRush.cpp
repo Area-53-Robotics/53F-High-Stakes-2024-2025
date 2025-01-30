@@ -5,7 +5,8 @@
 void auton_blueGoal() {
   chassis.setPose(0, 0, 0);
    if (auton == 1) {
-      clamp.set_value(HIGH);
+      chassis.turnToHeading(180, 1000);
+      /*clamp.set_value(HIGH);
       chassis.moveToPoint(0, -17, 1000, {.forwards = false, .earlyExitRange = 0.1});
       chassis.waitUntilDone();
       chassis.turnToHeading(-30, 500);
@@ -47,7 +48,7 @@ void auton_blueGoal() {
       intake.move(-127);
       pros::delay(500);
       intake.move(0);
-      //pros::delay(3000);
+      //pros::delay(3000);*/
 }
    while (true) {
       lemlib::Pose pose = chassis.getPose();

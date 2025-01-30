@@ -36,6 +36,7 @@ void WSP_RedLeft();
 extern bool reverseDT;
 extern bool arcade;
 extern bool clampON;
+extern bool hangON;
 extern bool intakeToggle;
 extern bool outtakeToggle;
 extern int stopIntake;
@@ -45,6 +46,7 @@ extern pros::MotorGroup leftMotors;
 extern pros::MotorGroup rightMotors;
 extern pros::MotorGroup intake;
 extern pros::adi::DigitalOut clamp;
+extern pros::adi::DigitalOut hang;
 
 extern pros::Imu imu;
 extern pros::adi::Encoder horizontal_encoder;

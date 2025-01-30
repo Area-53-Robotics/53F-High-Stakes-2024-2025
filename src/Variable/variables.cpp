@@ -27,7 +27,7 @@ void on_center_button() {
 }
 
 // -- Auton -- //
-int auton = 9;
+int auton = 7;
 /*          
             1 = Blue GoalRush
             2 = Blue Left
@@ -67,6 +67,7 @@ void autonomous() {
 bool reverseDT = false;
 bool arcade = false;
 bool clampON = false;
+bool hangON = false;
 bool intakeToggle = false;
 bool outtakeToggle = false;
 int stopIntake = 0; 
@@ -79,17 +80,18 @@ pros::MotorGroup rightMotors({20, 4, -5}, pros::MotorGearset::blue);
 pros::MotorGroup intake({18, -15});
 
 pros::adi::DigitalOut clamp ('C');
+pros::adi::DigitalOut hang ('D'/* As in Diddy -Josh */);
 
 
 // -- Imu -- //
 pros::Imu imu(10);
 // -- Horizontal Tracking Wheel -- //
 pros::adi::Encoder horizontal_encoder('A', 'B');
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, 1.75);
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, 1.815);
 
 // -- Vertical Tracking Wheel -- //
 pros::adi::Encoder vertical_encoder('G', 'H');
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, 4.75);
+lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, 4.375);
 
 
 // -- Lemlib Configuration -- //
