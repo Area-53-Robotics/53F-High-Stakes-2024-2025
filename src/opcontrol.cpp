@@ -7,13 +7,12 @@ void opcontrol() {
   while (true) {
 
     // -- Getting Tracking Wheel Postion -- //
-    lemlib::Pose pose = chassis.getPose();
+    lemlib::Pose pose = chassis.getPose()
 
     // Display raw values on the VEX controller
     pros::lcd::print(0, "X: %f", pose.x); // Display X value on line 0
     pros::lcd::print(1, "Y: %f", pose.y); // Display Y value on line 1
-    pros::lcd::print(2, "Theta: %f",
-                     pose.theta); // Display Theta value on line 2
+    pros::lcd::print(2, "Theta: %f", pose.theta); // Display Theta value on line 2
 
     // -- Getting Y position for Left and Right joysticks -- //
     int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -25,7 +24,7 @@ void opcontrol() {
     if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
       reverseDT = !reverseDT;
     }
-    
+
     if (reverseDT == false && arcade == false) {
       controller.print(1, 0, "Reverse(A):_OFF_________");
       pros::lcd::print(4, "/ Arcade Drive and Reverse Drive OFF /");

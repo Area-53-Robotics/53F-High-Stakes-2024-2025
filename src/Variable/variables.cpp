@@ -28,7 +28,7 @@ void on_center_button() {
 
 // -- Auton -- //
 int auton = 7;
-/*          
+/*
             1 = Blue GoalRush
             2 = Blue Left
             3 = Blue Right
@@ -70,7 +70,7 @@ bool clampON = false;
 bool hangON = false;
 bool intakeToggle = false;
 bool outtakeToggle = false;
-int stopIntake = 0; 
+int stopIntake = 0;
 
 pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
@@ -153,7 +153,7 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
                         lateral_controller, // lateral PID settings
                         angular_controller, // angular PID settings
                         sensors, // odometry sensors
-                        &throttle_curve, 
+                        &throttle_curve,
                         &steer_curve
 );
 
