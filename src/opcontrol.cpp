@@ -12,7 +12,7 @@ void opcontrol() {
     // Display raw values on the VEX controller
     pros::lcd::print(0, "X: %f", pose.x); // Display X value on line 0
     pros::lcd::print(1, "Y: %f", pose.y); // Display Y value on line 1
-    pros::lcd::print(2, "Theta: %f", pose.theta); // Display Theta value on line 2
+    pros::lcd::print(2, "Theta: %f", pose.theta); // Display Theta value on line 3
 
     // -- Getting Y position for Left and Right joysticks -- //
     int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
