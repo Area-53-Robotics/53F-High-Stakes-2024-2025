@@ -7,7 +7,7 @@ void opcontrol() {
   while (true) {
 
     // -- Getting Tracking Wheel Postion -- //
-    lemlib::Pose pose = chassis.getPose()
+    lemlib::Pose pose = chassis.getPose();
 
     // Display raw values on the VEX controller
     pros::lcd::print(0, "X: %f", pose.x); // Display X value on line 0
