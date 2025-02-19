@@ -66,8 +66,6 @@ void autonomous() {
 // -- Motors & Controllers -- //
 bool reverseDT = false;
 bool arcade = false;
-bool clampON = false;
-bool hangON = false;
 bool intakeToggle = false;
 bool outtakeToggle = false;
 int stopIntake = 0;
@@ -79,9 +77,12 @@ pros::MotorGroup rightMotors({20, 4, -5}, pros::MotorGearset::blue);
 
 pros::MotorGroup intake({18, -15});
 
+bool clampON = false;
 pros::adi::DigitalOut clamp ('C');
-pros::adi::DigitalOut hang ('D'/* As in Diddy -Josh */);
-
+bool wallON = false;
+pros::adi::DigitalOut wall ('D'/* As in Diddy -Josh */);
+bool armON = false;
+pros::adi::DigitalOut arm ('E');
 
 // -- Imu -- //
 pros::Imu imu(10);
@@ -116,9 +117,9 @@ lemlib::ControllerSettings angular_controller(5, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               26, // derivative gain (kD)
                                               3, // anti windup
-                                              1, // small error range, in inches
+                                              0.5, // small error range, in inches
                                               100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
+                                              2, // large error range, in inches
                                               500, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
@@ -127,12 +128,12 @@ lemlib::ControllerSettings angular_controller(5, // proportional gain (kP)
 lemlib::ControllerSettings lateral_controller(15, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               30, // derivative gain (kD)
-                                              0, // anti windup
-                                              0, // small error range, in inches
-                                              0, // small error range timeout, in milliseconds
-                                              0, // large error range, in inches
-                                              0, // large error range timeout, in milliseconds
-                                              0 // maximum acceleration (slew)
+                                              3, // anti windup
+                                              1, // small error range, in inches
+                                              100, // small error range timeout, in milliseconds
+                                              3, // large error range, in inches
+                                              500, // large error range timeout, in milliseconds
+                                              20 // maximum acceleration (slew)
 );
 
 // --- I think this is drive curve... idk --- //

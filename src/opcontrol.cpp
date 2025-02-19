@@ -105,15 +105,29 @@ void opcontrol() {
       pros::lcd::print(5, "/ Clamp Deactivated /");
     }
 
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-      hangON = !hangON;
+    // -- Wallstake Arm -- //
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+      wallON = !wallON;
     }
 
-    if (hangON == true) {
-      hang.set_value(HIGH);
+    if (wallON == true) {
+      wall.set_value(HIGH);
       pros::lcd::print(6, "/ Hang Activated /");
     } else {
-      hang.set_value(LOW);
+      wall.set_value(LOW);
+      pros::lcd::print(6, "/ Hang Deactivated /");
+    }
+
+    // -- Clamp -- //
+    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+      armON = !armON;
+    }
+
+    if (armON == true) {
+      arm.set_value(HIGH);
+      pros::lcd::print(6, "/ Hang Activated /");
+    } else {
+      arm.set_value(LOW);
       pros::lcd::print(6, "/ Hang Deactivated /");
     }
 
