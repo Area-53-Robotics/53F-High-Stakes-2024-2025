@@ -1,137 +1,105 @@
+#include "main.h"
 #include "pros/misc.h"
+#include "pros/rtos.hpp"
 #include "variables.h"
+#include <iomanip>
+#include <sstream>
+
+bool showKeybinds = false;
+
+void coordinates() {
+    lemlib::Pose pose = chassis.getPose();
+
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(2);
+    ss << "X: " << pose.x << " Y: " << pose.y << " Theta: " << pose.theta;
+
+    pros::lcd::print(0, "X: %.2f; Y: %.2f; Theta: %.2f", pose.x, pose.y, pose.theta);
+    //controller.set_text(1, 0, ss.str());
+}
+
+void displayInfo() {
+    std::stringstream status;
+    status << (reverseDT ? "Rev " : "") << (arcade ? "Arc " : "") << (clampON ? "Clamp " : "")
+           << (wallON ? "Wall " : "") << (armON ? "Arm " : "");
+    //controller.set_text(1, 0, status.str());
+}
+
+void displayKeybinds() {
+    //controller.set_text(1, 0, "A: Rev | B: Arc | UP: Clamp");
+    //controller.set_text(2, 0, "L1: Wall | LEFT: Arm");
+}
 
 // Open Control (Driver Control)
 void opcontrol() {
-  clamp.set_value(HIGH);
-  while (true) {
+    //pros::delay(100);
+    //controller.clear();
 
-    // -- Getting Tracking Wheel Postion -- //
-    lemlib::Pose pose = chassis.getPose();
+    while (true) {
+        int battery = pros::battery::get_capacity();
+        //controller.print(0, 0, "Bat: %d%%", battery);
+        pros::lcd::print(1, "Battery: %d%%", battery);
 
-    // Display raw values on the VEX controller
-    pros::lcd::print(0, "X: %f", pose.x); // Display X value on line 0
-    pros::lcd::print(1, "Y: %f", pose.y); // Display Y value on line 1
-    pros::lcd::print(2, "Theta: %f", pose.theta); // Display Theta value on line 3
+        coordinates();
 
-    // -- Getting Y position for Left and Right joysticks -- //
-    int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-    int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-    // -- Getting X position for Right joystick (Arcade Drive) -- //
-    int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        double leftSpeed = leftMotors.get_actual_velocity();
+        double rightSpeed = rightMotors.get_actual_velocity();
+        //controller.print(2, 0, "L: %.1f  R: %.1f", leftSpeed, rightSpeed);
+        pros::lcd::print(2, "L: %.1f  R: %.1f", leftSpeed, rightSpeed);
 
-    // -- Toggle for Reverse Drivetrain and funtion for Drivetrain -- //
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-      reverseDT = !reverseDT;
+        int leftY = controller.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightY = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+        int rightX = controller.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+            reverseDT = !reverseDT;
+        }
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+            arcade = !arcade;
+        }
+        if (!reverseDT && !arcade) {
+            chassis.tank(leftY, rightY);
+        } else if (reverseDT && !arcade) {
+            chassis.tank(-rightY, -leftY);
+        } else if (arcade && !reverseDT) {
+            chassis.arcade(rightY, rightX);
+        } else if (arcade && reverseDT) {
+            chassis.arcade(-rightY, rightX);
+        }
+
+        if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            intake.move(127);
+        } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            intake.move(-127);
+        } else {
+            intake.move(0);
+        }
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2)) {
+            clampON = !clampON;
+        }
+        clamp.set_value(clampON ? HIGH : LOW);
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
+            wallON = !wallON;
+        }
+        wall.set_value(wallON ? HIGH : LOW);
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
+            armON = !armON;
+        }
+        arm.set_value(armON ? HIGH : LOW);
+
+        if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
+            showKeybinds = !showKeybinds;
+        }
+
+        if (showKeybinds) {
+            displayKeybinds();
+        } else {
+            displayInfo();
+        }
+
+        pros::delay(25);
     }
-
-    if (reverseDT == false && arcade == false) {
-      controller.print(1, 0, "Reverse(A):_OFF_________");
-      pros::lcd::print(4, "/ Arcade Drive and Reverse Drive OFF /");
-      chassis.tank(leftY, rightY);
-    } else if (reverseDT == true && arcade == false) {
-      controller.print(1, 0, "Reverse(A):_ON__________");
-      pros::lcd::print(4, "/ Reverse DriveTrain ON /");
-      chassis.tank(-rightY, -leftY);
-    }
-
-    // -- Toggle for Arcade Drivetrain and funtion for Arcade Drive -- //
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-      arcade = !arcade;
-    }
-
-    if (arcade == true && reverseDT == false) {
-      controller.print(1, 0, "Arcade(B):_ON__________");
-      pros::lcd::print(4, "/ Arcade Drive ON /");
-      chassis.arcade(rightY, rightX);
-    } else if (arcade == true && reverseDT == true) {
-      controller.print(1, 0, "Rev(A)&Cade(B):ON__________");
-      pros::lcd::print(4, "/ Arcade Drive and Reverse Drive ON /");
-      chassis.arcade(-rightY, rightX);
-    }
-
-    // -- Intake function (Hold) -- //
-    if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-      intake.move(127);
-    } else if (controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-      intake.move(-127);
-    } else {
-      intake.move(0);
-    }
-
-    // -- Intake function (Toggle) -- //
-    /*if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-       //intakeToggle = true;
-       //outtakeToggle = false;
-       stopIntake = (stopIntake + 1);
-       pros::lcd::print(5, "/ Intaking /");
-    }else if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-       //intakeToggle = false;
-       //outtakeToggle = true;
-       stopIntake = (stopIntake - 1);
-       pros::lcd::print(5, "/ Outtaking /");
-    }else {
-       intake.move(0);
-    }
-
-    if(controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
-       stopIntake = 0;
-    }
-
-    if(stopIntake == 1){
-       intake.move(127);
-       std::cout << stopIntake;
-    }else if(stopIntake == -1){
-       intake.move(-127);
-       std::cout << stopIntake;
-    }else{
-       //intakeToggle = false;
-       //outtakeToggle = false;
-       stopIntake = 0;
-       intake.move(0);
-       std::cout << stopIntake;
-    }*/
-
-    // -- Clamp -- //
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-      clampON = !clampON;
-    }
-
-    if (clampON == true) {
-      clamp.set_value(HIGH);
-      pros::lcd::print(5, "/ Clamp Activated /");
-    } else {
-      clamp.set_value(LOW);
-      pros::lcd::print(5, "/ Clamp Deactivated /");
-    }
-
-    // -- Wallstake Arm -- //
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1)) {
-      wallON = !wallON;
-    }
-
-    if (wallON == true) {
-      wall.set_value(HIGH);
-      pros::lcd::print(6, "/ Hang Activated /");
-    } else {
-      wall.set_value(LOW);
-      pros::lcd::print(6, "/ Hang Deactivated /");
-    }
-
-    // -- Clamp -- //
-    if (controller.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-      armON = !armON;
-    }
-
-    if (armON == true) {
-      arm.set_value(HIGH);
-      pros::lcd::print(6, "/ Hang Activated /");
-    } else {
-      arm.set_value(LOW);
-      pros::lcd::print(6, "/ Hang Deactivated /");
-    }
-
-    // Delay to save resources
-    pros::delay(25);
-  }
 }

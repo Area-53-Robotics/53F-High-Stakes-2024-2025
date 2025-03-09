@@ -4,7 +4,6 @@
 
 void auton_skills() {
   chassis.setPose(0, 0, 0);
-   if (auton == 7) {
       intake.move(-127);
       pros::delay(500);
       intake.move(0);
@@ -71,7 +70,6 @@ void auton_skills() {
       chassis.waitUntilDone();
       chassis.moveToPose(29, 0, 90, 2000, {.forwards = false});
 
-}
    while (true) {
       lemlib::Pose pose = chassis.getPose();
 
@@ -85,8 +83,8 @@ void auton_skills() {
       controller.set_text(2, 0, "Theta: ");
       controller.set_text(2, 7, std::to_string(pose.theta).c_str());
 
-      /*pros::lcd::print(0, "X: %f", pose.x);  // Display X value on line 0
+      pros::lcd::print(0, "X: %f", pose.x);  // Display X value on line 0
       pros::lcd::print(1, "Y: %f", pose.y);  // Display Y value on line 1
-      pros::lcd::print(2, "Theta: %f", pose.theta);  // Display Theta value on line 2*/
+      pros::lcd::print(2, "Theta: %f", pose.theta);  // Display Theta value on line 2
    }
 }

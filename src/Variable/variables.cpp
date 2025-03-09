@@ -29,36 +29,36 @@ void on_center_button() {
 // -- Auton -- //
 int auton = 7;
 /*
-            1 = Blue GoalRush
-            2 = Blue Left
-            3 = Blue Right
-            4 = Red GoalRush
-            5 = Red Left
-            6 = Red Right
-            7 = Skills
-            8 = WS RedLeft
-            9 = WSP RedLeft
+            1 = Blue Auto WP - Ladder
+            2 = Blue Auto WP - Ring Rush
+            3 = Blue GoalRush
+            4 = Blue Right
+            5 = Red Auto WP - Ladder
+            6 = Red Auto WP - Ring Rush
+            7 = Red GoalRush
+            8 = Red Left
+            9 = Skills
 */
 
 void autonomous() {
    if (auton == 1) {
-      auton_blueGoal();
+    Blue_AWP_L();
    }else if (auton == 2) {
-      auton_blueLeft();
+    Blue_AWP_RR();
    }else if (auton == 3) {
-      auton_blueRight();
+    auton_blueGoal();
    }else if (auton == 4) {
-      auton_redGoal();
+    auton_blueRight();
    }else if (auton == 5) {
-      auton_redLeft();
+    Red_AWP_L();
    }else if (auton == 6) {
-      auton_redRight();
+    Red_AWP_RR();
    }else if (auton == 7) {
-      auton_skills();
+    auton_redGoal();
    }else if (auton == 8) {
-      WS_RedLeft();
+    auton_redLeft();
    }else if (auton == 9) {
-      WSP_RedLeft();
+    auton_skills();
    }
 }
 
@@ -88,11 +88,11 @@ pros::adi::DigitalOut arm ('E');
 pros::Imu imu(10);
 // -- Horizontal Tracking Wheel -- //
 pros::adi::Encoder horizontal_encoder('A', 'B');
-lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, 1.815);
+lemlib::TrackingWheel horizontal_tracking_wheel(&horizontal_encoder, lemlib::Omniwheel::NEW_275, -1.825000);
 
 // -- Vertical Tracking Wheel -- //
 pros::adi::Encoder vertical_encoder('G', 'H');
-lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, 4.375);
+lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_275, -4.390180);
 
 
 // -- Lemlib Configuration -- //
@@ -117,23 +117,23 @@ lemlib::ControllerSettings angular_controller(5, // proportional gain (kP)
                                               0, // integral gain (kI)
                                               26, // derivative gain (kD)
                                               3, // anti windup
-                                              0.5, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              2, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
+                                              1, // small error range, in inches
+                                              50, // small error range timeout, in milliseconds
+                                              1.5, // large error range, in inches
+                                              250, // large error range timeout, in milliseconds
                                               0 // maximum acceleration (slew)
 );
 
 // lateral PID controller
-lemlib::ControllerSettings lateral_controller(15, // proportional gain (kP)
+lemlib::ControllerSettings lateral_controller(16, // proportional gain (kP)
                                               0, // integral gain (kI)
-                                              30, // derivative gain (kD)
+                                              3, // derivative gain (kD)
                                               3, // anti windup
                                               1, // small error range, in inches
-                                              100, // small error range timeout, in milliseconds
-                                              3, // large error range, in inches
-                                              500, // large error range timeout, in milliseconds
-                                              20 // maximum acceleration (slew)
+                                              50, // small error range timeout, in milliseconds
+                                              1.5, // large error range, in inches
+                                              250, // large error range timeout, in milliseconds
+                                              0 // maximum acceleration (slew)
 );
 
 // --- I think this is drive curve... idk --- //
@@ -163,5 +163,43 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
 void initialize() {
    pros::lcd::initialize();
    chassis.calibrate();
-   pros::lcd::print(3, "//----- Initialize Complete -----//");
+   controller.clear();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

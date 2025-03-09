@@ -21,15 +21,15 @@ void on_center_button();
 // Auton
 extern int auton;
 
-void auton_redRight();
-void auton_redLeft();
-void auton_blueRight();
-void auton_blueLeft();
-void auton_skills();
-void auton_blueGoal();
-void auton_redGoal();
-void WS_RedLeft();
-void WSP_RedLeft();
+/* 1 */ void Blue_AWP_L();
+/* 2 */ void Blue_AWP_RR();
+/* 3 */ void auton_blueGoal();
+/* 4 */ void auton_blueRight();
+/* 5 */ void Red_AWP_L();
+/* 6 */ void Red_AWP_RR();
+/* 7 */ void auton_redGoal();
+/* 8 */ void auton_redLeft();
+/* 9 */ void auton_skills();
 
 
 // Variables
